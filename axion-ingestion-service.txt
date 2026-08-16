@@ -1,0 +1,138 @@
+
+kubectl port-forward pod/postgresql-6d795fb67b-5qmlk 9000:5432
+
+docker login
+
+docker tag ingestion:v1 sohitgupta/ingestion:v1
+
+docker images
+
+docker push sohitgupta/ingestion:v1
+
+DATABASE_URL: str = os.getenv(
+    "DATABASE_URL",
+    "postgresql://admin:P%40ssw0rd@10.244.0.5:5432/mydatabase"
+)
+
+
+- name: POSTGRES_USER
+  value: "admin"
+
+- name: POSTGRES_PASSWORD
+  value: "P@ssw0rd"
+
+- name: POSTGRES_DB
+  value: "mydatabase"
+
+
+docker build -t ingestion:v2 .
+
+docker tag ingestion:v2 sohitgupta/ingestion:v2
+
+docker push sohitgupta/ingestion:v2
+
+
+
+
+deployment.yaml
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: axion-ingestion-service
+spec:
+  selector:
+    matchLabels:
+      app: axion-ingestion-service
+  template:
+    metadata:
+      labels:
+        app: axion-ingestion-service
+    spec:
+      containers:
+      - name: axion-ingestion-service
+        image: sohitgupta/ingestion:v1
+        ports:
+        - containerPort: 8000
+
+
+kubectl apply -f .\manifests
+
+
+
+pgadmin-6dbd64567b-4dmd5                 1/1     Running            0             3h41m
+pgadmin-6dbd64567b-5dpmw                 1/1     Running            0             3h41m
+postgresql-6d795fb67b-5qmlk              1/1     Running            0             3h42m
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-ingestion-service> kubectl get pods
+NAME                                     READY   STATUS    RESTARTS      AGE
+axion-ingestion-service-7f5b9d69-nnf68   1/1     Running   3 (31s ago)   55s
+pgadmin-6dbd64567b-4dmd5                 1/1     Running   0             3h41m
+pgadmin-6dbd64567b-5dpmw                 1/1     Running   0             3h41m
+postgresql-6d795fb67b-5qmlk              1/1     Running   0             3h42m
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-ingestion-service> kubectl get pods
+NAME                                     READY   STATUS    RESTARTS      AGE
+axion-ingestion-service-7f5b9d69-nnf68   0/1     Error     3 (32s ago)   56s
+pgadmin-6dbd64567b-4dmd5                 1/1     Running   0             3h41m
+pgadmin-6dbd64567b-5dpmw                 1/1     Running   0             3h41m
+postgresql-6d795fb67b-5qmlk              1/1     Running   0             3h42m
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-ingestion-service> kubectl get pods
+NAME                                     READY   STATUS    RESTARTS      AGE
+axion-ingestion-service-7f5b9d69-nnf68   0/1     Error     3 (33s ago)   57s
+pgadmin-6dbd64567b-4dmd5                 1/1     Running   0             3h41m
+pgadmin-6dbd64567b-5dpmw                 1/1     Running   0             3h41m
+postgresql-6d795fb67b-5qmlk              1/1     Running   0             3h42m
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-ingestion-service> kubectl get pods
+NAME                                     READY   STATUS             RESTARTS      AGE
+axion-ingestion-service-7f5b9d69-nnf68   0/1     CrashLoopBackOff   4 (30s ago)   2m8s
+pgadmin-6dbd64567b-4dmd5                 1/1     Running            0             3h43m
+pgadmin-6dbd64567b-5dpmw                 1/1     Running            0             3h43m
+postgresql-6d795fb67b-5qmlk              1/1     Running            0             3h43m
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-ingestion-service> kubectl logs axion-ingestion-service-7f5b9d69-nnf68
+INFO:     Started server process [1]
+INFO:     Waiting for application startup.
+2026-08-16 15:25:45,139 | INFO     | Connecting to PostgreSQL @ postgresql://admin:P@ssw0rd@10.244.0.5:5432/mydatabase
+ERROR:    Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/starlette/routing.py", line 693, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/app/main.py", line 35, in lifespan
+    await connect_db()
+  File "/app/database.py", line 15, in connect_db
+    pool = await asyncpg.create_pool(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/pool.py", line 418, in _async__init__
+    await self._initialize()
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/pool.py", line 445, in _initialize
+    await first_ch.connect()
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/pool.py", line 132, in connect
+    self._con = await self._pool._get_new_connection()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/pool.py", line 517, in _get_new_connection
+    con = await self._connect(
+          ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/connection.py", line 2421, in connect
+    return await connect_utils._connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/connect_utils.py", line 1075, in _connect
+    raise last_error or exceptions.TargetServerAttributeNotMatched(
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/connect_utils.py", line 1049, in _connect
+    conn = await _connect_addr(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/connect_utils.py", line 886, in _connect_addr
+    return await __connect_addr(params, True, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/connect_utils.py", line 931, in __connect_addr
+    tr, pr = await connector
+             ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/connect_utils.py", line 802, in _create_ssl_connection
+    tr, pr = await loop.create_connection(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "uvloop/loop.pyx", line 1982, in create_connection
+socket.gaierror: [Errno -2] Name or service not known
+
+ERROR:    Application startup failed. Exiting.
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-ingestion-service> 

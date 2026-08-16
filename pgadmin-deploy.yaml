@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin
+  labels:
+    app: pgadmin
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: pgadmin
+
+  template:
+    metadata:
+      labels:
+        app: pgadmin
+
+    spec:
+      containers:
+        - name: pgadmin
+          image: dpage/pgadmin4:9.17
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 80
+              protocol: TCP
+
+          env:
+            - name: PGADMIN_DEFAULT_EMAIL
+              value: "admin@sohitdevops.com"
+
+            - name: PGADMIN_DEFAULT_PASSWORD
+              value: "ChangeMe@12345"
+
+            - name: PGADMIN_LISTEN_PORT
+              value: "80"

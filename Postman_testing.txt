@@ -1,0 +1,46 @@
+Postman
+   |
+   | POST telemetry
+   v
+localhost:7005
+   |
+   v
+axion-ingestion-service
+   |
+   v
+PostgreSQL
+   |
+   | GET telemetry
+   v
+localhost:7005
+
+Postman
+   |
+   | GET dashboard/devices/trends
+   v
+localhost:7002
+   |
+   v
+axion-telemetry-query-service
+   |
+   v
+PostgreSQL
+
+
+
+                         SEND
+Postman ───────────────────────────► Ingestion Service
+                                      localhost:7005
+                                           │
+                                           ▼
+                                      PostgreSQL
+                                      localhost:9000
+                                           │
+                                           ▼
+                                  Query Service
+                                  localhost:7002
+                                           │
+                         RECEIVE         │
+Postman ◄─────────────────────────────────┘
+
+

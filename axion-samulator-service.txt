@@ -1,0 +1,60 @@
+simulator.py
+
+Line 11
+
+API_URL = os.getenv("API_URL", "http://10.244.0.9:8000/api/v1/telemetry/ingest")
+
+docker build -t simulator:v1 .
+
+docker images
+
+
+docker tag simulator:v1 sohitgupta/simulator:v1      
+
+docker push sohitgupta/simulator:v1
+
+
+deployment.yaml
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simulator
+spec:
+  selector:
+    matchLabels:
+      app: simulator
+  template:
+    metadata:
+      labels:
+        app: simulator
+    spec:
+      containers:
+      - name: simulator
+        image: sohitgupta/simulator:v1
+        ports:
+        - containerPort: 8000
+
+
+
+
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-data-simulator> kubectl apply -f .\manifests
+deployment.apps/simulator created
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-data-simulator> kubectl get deployment -n default
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+axion-ingestion-service   1/1     1            1           35m
+pgadmin                   2/2     2            2           4h39m
+postgresql                1/1     1            1           4h39m
+simulator                 1/1     1            1           8s
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-data-simulator> kubectl get pods -o wide         
+NAME                                       READY   STATUS    RESTARTS   AGE     IP            NODE                    NOMINATED NODE   READINESS GATES
+axion-ingestion-service-6d5b88ff5d-b6bh2   1/1     Running   0          36m     10.244.0.9    desktop-control-plane   <none>           <none>
+pgadmin-6dbd64567b-4dmd5                   1/1     Running   0          4h39m   10.244.0.7    desktop-control-plane   <none>           <none>
+pgadmin-6dbd64567b-5dpmw                   1/1     Running   0          4h39m   10.244.0.6    desktop-control-plane   <none>           <none>
+postgresql-6d795fb67b-5qmlk                1/1     Running   0          4h39m   10.244.0.5    desktop-control-plane   <none>           <none>
+simulator-b4f4dc445-m7xrz                  1/1     Running   0          16s     10.244.0.10   desktop-control-plane   <none>           <none>
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-data-simulator> 
+
+
+                                      

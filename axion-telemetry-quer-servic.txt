@@ -1,0 +1,148 @@
+config.py
+
+     "DATABASE_URL",
+        "postgresql://admin:P%40ssw0rd@10.244.0.5:5432/mydatabase",
+    )
+
+
+docker build -t telemetry:v1 .
+
+docker tag telemetry:v1 sohitgupta/telemetry:v1
+
+docker push sohitgupta/telemetry:v1
+
+
+deployment.yaml
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telemetry
+spec:
+  selector:
+    matchLabels:
+      app: telemetry
+  template:
+    metadata:
+      labels:
+        app: telemetry
+    spec:
+      containers:
+      - name: telemetry
+        image: sohitgupta/telemetry:v1
+        ports:
+        - containerPort: 8000
+
+
+
+C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-telemetry-query-service> kubectl apply -f .\manifests
+deployment.apps/telemetry created
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-telemetry-query-service> kubectl get deployment -n 
+default                
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+axion-ingestion-service   1/1     1            1           72m
+pgadmin                   2/2     2            2           5h16m
+postgresql                1/1     1            1           5h16m
+simulator                 1/1     1            1           36m
+telemetry                 1/1     1            1           6s
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-telemetry-query-service> kubectl get pods -o wide  
+NAME                                       READY   STATUS    RESTARTS   AGE     IP            NODE                    NOMINATED NODE   READINESS GATES
+axion-ingestion-service-6d5b88ff5d-b6bh2   1/1     Running   0          72m     10.244.0.9    desktop-control-plane   <none>           <none>
+pgadmin-6dbd64567b-4dmd5                   1/1     Running   0          5h16m   10.244.0.7    desktop-control-plane   <none>           <none>
+pgadmin-6dbd64567b-5dpmw                   1/1     Running   0          5h16m   10.244.0.6    desktop-control-plane   <none>           <none>
+postgresql-6d795fb67b-5qmlk                1/1     Running   0          5h16m   10.244.0.5    desktop-control-plane   <none>           <none>
+simulator-b4f4dc445-m7xrz                  1/1     Running   0          37m     10.244.0.10   desktop-control-plane   <none>           <none>
+telemetry-6ddcf6c68-4h5ts                  1/1     Running   0          12s     10.244.0.11   desktop-control-plane   <none>           <none>
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-telemetry-query-service> 
+
+kubectl port-forward pod/telemetry-6ddcf6c68-4h5ts 7000:8000
+
+http://localhost:7000/docs
+
+
+kubectl port-forward pod/axion-ingestion-service-6d5b88ff5d-b6bh2 7002:8000
+
+http://localhost:7002/docs
+
+
+
+axion-telemetry-query-service
+
+swagger updated
+
+    title="Axion Telemetry Query Service",
+    description="API for the Axion condition monitoring dashboard",
+    version="1.0.0",
+    docs_url="/swagger",
+    lifespan=lifespan
+)
+
+
+
+docker build -t telemetry:v2 .
+
+docker tag telemetry:v2 sohitgupta/telemetry:v2
+
+docker push sohitgupta/telemetry:v2
+
+
+deployment.yaml
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telemetry
+spec:
+  selector:
+    matchLabels:
+      app: telemetry
+  template:
+    metadata:
+      labels:
+        app: telemetry
+    spec:
+      containers:
+      - name: telemetry
+        image: sohitgupta/telemetry:v2
+        ports:
+        - containerPort: 8000
+
+
+kubectl apply -f .\manifests
+
+
+ kubectl apply -f .\manifests       
+deployment.apps/telemetry created
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-telemetry-query-service> kubect get deployments    
+kubect: The term 'kubect' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-telemetry-query-service> kubectl get deployment -n 
+default
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+axion-ingestion-service   1/1     1            1           96m
+pgadmin                   2/2     2            2           5h40m
+postgresql                1/1     1            1           5h40m
+simulator                 1/1     1            1           60m
+telemetry                 1/1     1            1           9s
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-telemetry-query-service> kubectl get pods -o wide  
+NAME                                       READY   STATUS    RESTARTS   AGE     IP            NODE                    NOMINATED NODE   READINESS GATES
+axion-ingestion-service-6d5b88ff5d-b6bh2   1/1     Running   0          96m     10.244.0.9    desktop-control-plane   <none>           <none>
+pgadmin-6dbd64567b-4dmd5                   1/1     Running   0          5h40m   10.244.0.7    desktop-control-plane   <none>           <none>
+pgadmin-6dbd64567b-5dpmw                   1/1     Running   0          5h40m   10.244.0.6    desktop-control-plane   <none>           <none>
+postgresql-6d795fb67b-5qmlk                1/1     Running   0          5h40m   10.244.0.5    desktop-control-plane   <none>           <none>
+simulator-b4f4dc445-m7xrz                  1/1     Running   0          61m     10.244.0.10   desktop-control-plane   <none>           <none>
+telemetry-5658947f4c-hw7t4                 1/1     Running   0          25s     10.244.0.12   desktop-control-plane   <none>           <none>
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-telemetry-query-service> 
+
+kubectl port-forward pod/telemetry-5658947f4c-hw7t4 7002:8000
+
+
+http://localhost:7002/swagger      
+
+http://localhost:7002/devices
+
+http://localhost:7002/devices/top-anomalous 
+
+

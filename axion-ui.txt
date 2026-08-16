@@ -1,0 +1,64 @@
+axion UI
+
+src--App.tsx--line-18--const API_BASE = 'http://localhost:7002';
+src--components--pages--DashboardView.tsx--line-10--const API_BASE = 'http://localhost:7002';
+src--components--pages--Historical.Trends.tsx--line-7--const API_BASE = 'http://localhost:7002';
+src--components--pages--login.tsx--line-15--    if (email === 'info@devopsinsiders.com' && password === 'P@ssw01rd@123') {
+
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-ui> 
+
+
+docker build -t axion-ui:v1 .
+
+docker tag axion-ui:v1 sohitgupta/axion-ui:v1
+
+docker push sohitgupta/axion-ui:v1
+
+ C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-ui
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----           8/16/2026 10:32 PM                .github
+d----           8/16/2026 11:34 PM                manifests
+d----           8/16/2026 10:32 PM                public
+d----           8/16/2026 10:32 PM                src
+-a---           8/16/2026 10:32 PM            277 .gitignore
+-a---           8/16/2026 10:32 PM            492 Dockerfile
+-a---           8/16/2026 10:32 PM            613 eslint.config.js
+-a---           8/16/2026 10:32 PM            467 index.html
+-a---           8/16/2026 10:32 PM            175 nginx.conf
+-a---           8/16/2026 10:32 PM         164120 package-lock.json
+-a---           8/16/2026 10:32 PM           1287 package.json
+-a---           8/16/2026 10:32 PM           2498 README.md
+-a---           8/16/2026 10:32 PM            642 tsconfig.app.json
+-a---           8/16/2026 10:32 PM            126 tsconfig.json
+-a---           8/16/2026 10:32 PM            615 tsconfig.node.json
+-a---           8/16/2026 10:32 PM            228 vite.config.ts
+
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-ui> kubectl apply -f .\manifests
+deployment.apps/axion-ui created
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-ui> kubectl get deployment -n default  
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+axion-ingestion-service   1/1     1            1           141m
+axion-ui                  1/1     1            1           6s
+pgadmin                   2/2     2            2           6h24m
+postgresql                1/1     1            1           6h25m
+simulator                 1/1     1            1           105m
+telemetry                 1/1     1            1           44m
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-ui> kubectl get pods -o wide         
+NAME                                       READY   STATUS    RESTARTS   AGE     IP            NODE                    NOMINATED NODE   READINESS GATES
+axion-ingestion-service-6d5b88ff5d-b6bh2   1/1     Running   0          141m    10.244.0.9    desktop-control-plane   <none>           <none>
+axion-ui-549b7bbd4f-bnsk8                  1/1     Running   0          24s     10.244.0.13   desktop-control-plane   <none>           <none>
+pgadmin-6dbd64567b-4dmd5                   1/1     Running   0          6h25m   10.244.0.7    desktop-control-plane   <none>           <none>
+pgadmin-6dbd64567b-5dpmw                   1/1     Running   0          6h25m   10.244.0.6    desktop-control-plane   <none>           <none>
+postgresql-6d795fb67b-5qmlk                1/1     Running   0          6h25m   10.244.0.5    desktop-control-plane   <none>           <none>
+simulator-b4f4dc445-m7xrz                  1/1     Running   0          105m    10.244.0.10   desktop-control-plane   <none>           <none>
+telemetry-5658947f4c-hw7t4                 1/1     Running   0          45m     10.244.0.12   desktop-control-plane   <none>           <none>
+PS C:\Users\SOHIT GUPTA\Downloads\Kubernetes\Aug2026\16Aug2026\axion-ui>                         
+
+
+
+
+
+
+
